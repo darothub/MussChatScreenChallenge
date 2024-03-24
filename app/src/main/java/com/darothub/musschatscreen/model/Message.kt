@@ -1,9 +1,9 @@
-package com.darothub.musschatscreen.data.entities
+package com.darothub.musschatscreen.model
 
 import java.time.Instant
 
 data class Message (
-    val sender: String,
+    val sender: Sender,
     val content: String,
     val timestamp: Long = Instant.now().toEpochMilli()
 )
