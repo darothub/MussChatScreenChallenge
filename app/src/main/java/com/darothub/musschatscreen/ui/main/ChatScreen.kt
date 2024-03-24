@@ -14,6 +14,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,10 +29,9 @@ import com.darothub.musschatscreen.ui.components.MessageList
 import com.darothub.musschatscreen.ui.components.SendIcon
 import com.darothub.musschatscreen.ui.theme.MussChatScreenTheme
 import com.darothub.musschatscreen.util.bringViewAboveKeyboard
-import com.darothub.musschatscreen.util.say
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
+import com.darothub.musschatscreen.util.says
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 var currentUser = Sender.ME
 @ExperimentalFoundationApi
@@ -77,7 +77,6 @@ fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend
         }
     }
 }
-
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @Preview(showBackground = true)
@@ -87,10 +86,16 @@ fun ChatScreenPreview() {
         mutableStateListOf<Message>()
     }
     val text = remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
     MussChatScreenTheme {
         ChatScreen(messages, text) {
-            if (currentUser.say { messages.add(Message(it, text.value)) }) {
-                Sender.OTHER.say { messages.add(Message(it, text.value))  }
+            var newMessage = ""
+            if (currentUser.says { messages.add(Message(it, text.value)) }) {
+                newMessage = text.value
+                scope.launch {
+                    delay(2000)
+                    Sender.OTHER.says { messages.add(Message(it, newMessage))  }
+                }
             }
         }
     }

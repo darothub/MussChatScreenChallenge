@@ -2,12 +2,8 @@ package com.darothub.musschatscreen.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,11 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.darothub.musschatscreen.model.Message
-import com.darothub.musschatscreen.ui.main.currentUser
 
 @Composable
-fun MessageBubble(message: Message) {
-    val isMe = message.sender == currentUser
+fun MessageBubble(isMe: Boolean = true, message: Message) {
     Box(modifier = Modifier){
         Surface(
             modifier = Modifier

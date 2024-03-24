@@ -45,7 +45,7 @@ fun Modifier.hideKeyboardOnClick(onClick:() -> Unit): Modifier = Modifier.compos
 }
 
 @OptIn(ExperimentalContracts::class)
-inline fun Sender.say(block: (Sender) -> Boolean): Boolean {
+inline fun Sender.says(block: (Sender) -> Boolean): Boolean {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
