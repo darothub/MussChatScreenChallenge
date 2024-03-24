@@ -1,7 +1,6 @@
 package com.darothub.musschatscreen.ui.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -9,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -21,16 +18,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.darothub.musschatscreen.R
 import com.darothub.musschatscreen.model.Message
 import com.darothub.musschatscreen.model.Sender
 import com.darothub.musschatscreen.ui.components.ChatTextField
@@ -41,6 +32,7 @@ import com.darothub.musschatscreen.util.bringViewAboveKeyboard
 import com.darothub.musschatscreen.util.says
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.Instant
 
 var currentUser = Sender.ME
 @ExperimentalFoundationApi
@@ -92,21 +84,45 @@ fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend
 @Composable
 fun ChatScreenPreview() {
     val messages = remember {
-        mutableStateListOf<Message>()
+        MessageDatabase.mutableList
     }
     val text = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val list = arrayOfMessage()
+    list.inintialize()
     MussChatScreenTheme {
         ChatScreen(messages, text) {
             var newMessage = ""
-            if (currentUser.says { messages.add(Message(it, text.value)) }) {
+            if (currentUser.says { list.addMessage(Message(sender = it, content = text.value)) }) {
                 newMessage = text.value
                 scope.launch {
                     delay(2000)
-                    Sender.OTHER.says { messages.add(Message(it, newMessage))  }
+                    Sender.OTHER.says { list.addMessage(Message(sender = it, content = newMessage))  }
                 }
             }
         }
     }
 }
 
+class MessageDatabase {
+    fun addMessage(newMessage: Message) = mutableList.add(newMessage)
+    fun updateMessage(message: Message){
+        val index = message.id.toInt()
+        mutableList[index] = message
+    }
+    fun inintialize() {
+        addMessage(Message(sender = Sender.ME, content = "Hey"))
+        addMessage(
+            Message(
+                sender = Sender.OTHER,
+                content = "Hey",
+                timestamp = Instant.now().plusSeconds(60).toEpochMilli()
+            )
+        )
+    }
+    companion object {
+        var mutableList = mutableStateListOf<Message>()
+    }
+}
+
+fun arrayOfMessage():MessageDatabase = MessageDatabase()

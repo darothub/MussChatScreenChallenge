@@ -16,7 +16,7 @@ import com.darothub.musschatscreen.model.Message
 import com.darothub.musschatscreen.util.flip
 
 @Composable
-fun MessageBubble(modifier: Modifier=Modifier, isMe: Boolean = true, message: Message) {
+fun MessageBubble(modifier: Modifier=Modifier, message: Message, isMe: Boolean = true) {
     Box(modifier = modifier){
         Surface(
             modifier = Modifier
@@ -31,9 +31,12 @@ fun MessageBubble(modifier: Modifier=Modifier, isMe: Boolean = true, message: Me
                 Text(
                     text = message.content,
                     modifier = Modifier.flip(!isMe)
-                        .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+                        .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = if (message.hasTailImage) 0.dp else 8.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
-                TailImage()
+                if (message.hasTailImage){
+                    TailImage()
+                }
             }
         }
     }
