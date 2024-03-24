@@ -21,13 +21,19 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.darothub.musschatscreen.data.entities.Message
+import com.darothub.musschatscreen.model.Message
+import com.darothub.musschatscreen.model.Sender
 import com.darothub.musschatscreen.ui.components.ChatTextField
 import com.darothub.musschatscreen.ui.components.MessageList
 import com.darothub.musschatscreen.ui.components.SendIcon
 import com.darothub.musschatscreen.ui.theme.MussChatScreenTheme
 import com.darothub.musschatscreen.util.bringViewAboveKeyboard
+import com.darothub.musschatscreen.util.say
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
+var currentUser = Sender.ME
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @Composable
@@ -82,8 +88,11 @@ fun ChatScreenPreview() {
     }
     val text = remember { mutableStateOf("") }
     MussChatScreenTheme {
-        ChatScreen(messages, text){
-            messages.add(Message("Abdul", text.value))
+        ChatScreen(messages, text) {
+            if (currentUser.say { messages.add(Message(it, text.value)) }) {
+                Sender.OTHER.say { messages.add(Message(it, text.value))  }
+            }
         }
     }
 }
+

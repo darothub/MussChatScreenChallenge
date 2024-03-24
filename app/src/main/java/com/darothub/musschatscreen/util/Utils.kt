@@ -13,7 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
+import com.darothub.musschatscreen.model.Sender
 import kotlinx.coroutines.launch
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 @ExperimentalFoundationApi
 fun Modifier.bringViewAboveKeyboard(): Modifier = Modifier.composed {
@@ -38,4 +42,12 @@ fun Modifier.hideKeyboardOnClick(onClick:() -> Unit): Modifier = Modifier.compos
         onClick()
         focusManager.clearFocus()
     }
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun Sender.say(block: (Sender) -> Boolean): Boolean {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(this)
 }
