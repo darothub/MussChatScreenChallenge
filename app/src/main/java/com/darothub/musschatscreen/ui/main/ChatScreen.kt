@@ -1,6 +1,7 @@
 package com.darothub.musschatscreen.ui.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -15,9 +16,13 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.darothub.musschatscreen.data.entities.Message
@@ -27,7 +32,8 @@ import com.darothub.musschatscreen.ui.components.SendIcon
 import com.darothub.musschatscreen.ui.theme.MussChatScreenTheme
 import com.darothub.musschatscreen.util.bringViewAboveKeyboard
 
-@OptIn(ExperimentalFoundationApi::class)
+@ExperimentalFoundationApi
+@ExperimentalComposeUiApi
 @Composable
 fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend: () -> Unit) {
     Column(
@@ -58,7 +64,8 @@ fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend
                     }
                 )
                 SendIcon(
-                    modifier = Modifier.align(Alignment.CenterVertically),
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically),
                     onClick = {
                         onSend()
                         newContent.value = ""
@@ -69,7 +76,8 @@ fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend
     }
 }
 
-
+@ExperimentalFoundationApi
+@ExperimentalComposeUiApi
 @Preview(showBackground = true)
 @Composable
 fun ChatScreenPreview() {
