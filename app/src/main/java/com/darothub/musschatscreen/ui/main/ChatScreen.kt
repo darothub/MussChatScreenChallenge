@@ -1,5 +1,6 @@
 package com.darothub.musschatscreen.ui.main
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -25,7 +25,9 @@ import com.darothub.musschatscreen.ui.components.ChatTextField
 import com.darothub.musschatscreen.ui.components.MessageList
 import com.darothub.musschatscreen.ui.components.SendIcon
 import com.darothub.musschatscreen.ui.theme.MussChatScreenTheme
+import com.darothub.musschatscreen.util.bringViewAboveKeyboard
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend: () -> Unit) {
     Column(
@@ -34,10 +36,10 @@ fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend
         MessageList(messages)
         Surface(
             modifier = Modifier
+                .bringViewAboveKeyboard()
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
                 .shadow(elevation = 10.dp),
-            shape = MaterialTheme.shapes.medium,
             contentColor = Color.Black
         ) {
             Row(
@@ -66,6 +68,7 @@ fun ChatScreen(messages: List<Message>, newContent: MutableState<String>, onSend
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
