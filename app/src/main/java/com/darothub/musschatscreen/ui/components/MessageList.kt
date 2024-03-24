@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.darothub.musschatscreen.model.Message
 import com.darothub.musschatscreen.ui.main.currentUser
-import kotlinx.coroutines.delay
+import com.darothub.musschatscreen.util.flip
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,7 +38,7 @@ fun ColumnScope.MessageList(messages: List<Message>) {
                     targetState = animationState,
                 ) { content ->
                     if (content){
-                        MessageBubble(isMe = isMe, message = message)
+                        MessageBubble(modifier = Modifier.flip(!isMe), isMe = isMe, message = message)
                     }
                 }
 

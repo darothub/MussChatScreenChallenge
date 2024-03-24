@@ -11,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import com.darothub.musschatscreen.model.Sender
@@ -50,4 +51,12 @@ inline fun Sender.says(block: (Sender) -> Boolean): Boolean {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
     return block(this)
+}
+
+fun Modifier.flip(isFlipped: Boolean): Modifier = composed {
+    if (isFlipped) {
+        scale(-1f, 1f)
+    } else {
+        this
+    }
 }
