@@ -1,10 +1,10 @@
 package com.darothub.musschatscreen.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomTextField(
     modifier: Modifier,
@@ -32,8 +33,7 @@ fun CustomTextField(
                 BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
                 shape = RoundedCornerShape(percent = 50)
             )
-            .padding(10.dp)
-            .fillMaxWidth(),
+            .padding(10.dp),
         value = text,
         onValueChange = onValueChange,
         textStyle = LocalTextStyle.current.copy(
