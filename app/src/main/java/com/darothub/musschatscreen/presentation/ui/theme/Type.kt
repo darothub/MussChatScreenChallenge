@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.ui.theme
+package com.darothub.musschatscreen.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

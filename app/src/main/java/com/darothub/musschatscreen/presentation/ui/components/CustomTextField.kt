@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.ui.components
+package com.darothub.musschatscreen.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi

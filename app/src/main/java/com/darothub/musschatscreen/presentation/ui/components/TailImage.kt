@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.ui.components
+package com.darothub.musschatscreen.presentation.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size

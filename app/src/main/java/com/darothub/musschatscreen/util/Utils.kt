@@ -53,6 +53,13 @@ inline fun Sender.says(block: (Sender) -> Boolean): Boolean {
     }
     return block(this)
 }
+@OptIn(ExperimentalContracts::class)
+inline fun Sender.sayss(block: (Sender) -> Unit): Unit {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return block(this)
+}
 
 fun Modifier.flip(isFlipped: Boolean): Modifier = composed {
     if (isFlipped) {

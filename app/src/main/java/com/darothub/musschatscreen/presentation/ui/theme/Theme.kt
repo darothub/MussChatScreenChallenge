@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.ui.theme
+package com.darothub.musschatscreen.presentation.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

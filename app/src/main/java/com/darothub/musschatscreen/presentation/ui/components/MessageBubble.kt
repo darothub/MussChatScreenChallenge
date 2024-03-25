@@ -1,5 +1,6 @@
-package com.darothub.musschatscreen.ui.components
+package com.darothub.musschatscreen.presentation.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -27,7 +28,12 @@ fun MessageBubble(modifier: Modifier=Modifier, message: Message, isMe: Boolean =
             color = if (isMe) Color.LightGray else Color.Black,
             contentColor = if (isMe) Color.Black else Color.White
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center),
+                verticalArrangement = Arrangement.SpaceBetween
+
+            ) {
                 Text(
                     text = message.content,
                     modifier = Modifier
@@ -38,7 +44,7 @@ fun MessageBubble(modifier: Modifier=Modifier, message: Message, isMe: Boolean =
                             end = 8.dp,
                             bottom = if (message.hasTail) 0.dp else 8.dp
                         )
-                        .align(Alignment.CenterHorizontally)
+
                 )
                 if (message.hasTail){
                     TailImage()

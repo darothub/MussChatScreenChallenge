@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.ui.theme
+package com.darothub.musschatscreen.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

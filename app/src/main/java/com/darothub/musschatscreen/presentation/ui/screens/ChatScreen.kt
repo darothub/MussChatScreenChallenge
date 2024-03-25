@@ -1,27 +1,37 @@
-package com.darothub.musschatscreen.ui.main
+package com.darothub.musschatscreen.presentation.ui.screens
 
+import android.util.Log
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.tooling.preview.Preview
+import com.darothub.musschatscreen.application.di.ServiceLocator
 import com.darothub.musschatscreen.model.Message
 import com.darothub.musschatscreen.model.Sender
-import com.darothub.musschatscreen.ui.components.ChatBox
-import com.darothub.musschatscreen.ui.components.MessageList
-import com.darothub.musschatscreen.ui.main.Number.ONE_INT
-import com.darothub.musschatscreen.ui.main.Number.ONE_LONG
-import com.darothub.musschatscreen.ui.main.Number.TEN_SECONDS
-import com.darothub.musschatscreen.ui.main.Number.TWENTY_SECONDS
-import com.darothub.musschatscreen.ui.main.Number.TWO_SECONDS
-import com.darothub.musschatscreen.ui.main.Number.ZERO_LONG
-import com.darothub.musschatscreen.ui.theme.MussChatScreenTheme
+import com.darothub.musschatscreen.presentation.viewmodel.ConversationViewModel
+import com.darothub.musschatscreen.presentation.ui.components.ChatBox
+import com.darothub.musschatscreen.presentation.ui.components.MessageList
+import com.darothub.musschatscreen.presentation.ui.screens.Number.ONE_INT
+import com.darothub.musschatscreen.presentation.ui.screens.Number.ONE_LONG
+import com.darothub.musschatscreen.presentation.ui.screens.Number.TEN_SECONDS
+import com.darothub.musschatscreen.presentation.ui.screens.Number.TWENTY_SECONDS
+import com.darothub.musschatscreen.presentation.ui.screens.Number.TWO_SECONDS
+import com.darothub.musschatscreen.presentation.ui.screens.Number.ZERO_LONG
+import com.darothub.musschatscreen.presentation.ui.theme.MussChatScreenTheme
+import com.darothub.musschatscreen.presentation.viewmodel.ConversationViewModelFactory
 import com.darothub.musschatscreen.util.says
+import com.darothub.musschatscreen.util.sayss
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
@@ -34,14 +44,16 @@ var currentUser = Sender.ME
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
 @Composable
-fun ChatScreen(conversation: Conversation, onSend: (String) -> Unit) {
+fun ChatScreen(viewModel: ConversationViewModel, onSend: (String) -> Unit) {
     val listState = rememberLazyListState()
+    val messages: StateFlow<List<Message>> = viewModel.messages
+    val collectedMessages = messages.collectAsState()
     Scaffold(
         bottomBar = {
-            ChatBox (conversation = conversation, onSend = onSend, listState = listState)
+            ChatBox (conversation = collectedMessages, onSend = onSend, listState = listState)
         }
     ) { paddingValues ->
-        MessageList(conversation = conversation, listState = listState, paddingValues = paddingValues)
+        MessageList(conversation = collectedMessages, listState = listState, paddingValues = paddingValues)
     }
 }
 
@@ -51,20 +63,25 @@ fun ChatScreen(conversation: Conversation, onSend: (String) -> Unit) {
 @Composable
 fun ChatScreenPreview() {
     val scope = rememberCoroutineScope()
-    val conversation = Conversation()
-
-    LaunchedEffect(key1 = Unit) {
-        scope.launch {
-            conversation.simulateOnGoingChat()
-        }
-    }
-
+    val conversationViewModel = ServiceLocator.getInstance().provideConversationViewModel()
+//    LaunchedEffect(key1 = Unit) {
+//        scope.launch {
+//            conversation.simulateOnGoingChat()
+//        }
+//    }
     MussChatScreenTheme {
-        ChatScreen(conversation) { content ->
-            if (currentUser.says { conversation.addMessage(Message(sender = it, content = content)) }) {
-                scope.launch {
-                    delay(TWO_SECONDS)
-                    Sender.OTHER.says { conversation.addMessage(Message(sender = it, content = content)) }
+        ChatScreen(conversationViewModel) { content ->
+            when {
+                content.isNotEmpty() -> {
+                    scope.launch {
+                        currentUser.sayss {
+                            conversationViewModel.addMessage(Message(sender = it, content = content))
+                        }
+//                        delay(TWENTY_SECONDS)
+//                        Sender.OTHER.sayss {
+//                            conversationViewModel.addMessage(Message(sender = it, content = content))
+//                        }
+                    }
                 }
             }
         }
@@ -72,14 +89,15 @@ fun ChatScreenPreview() {
 }
 
 
-class Conversation {
-    var messages = mutableStateListOf<Message>()
+class Conversation(
+    var messages:List<Message>  = mutableStateListOf()
+) {
+
     val messageBoundSafeSize: Long
         get() = messages.size.toLong() - ONE_LONG
 
-    fun addMessage(newMessage: Message) = messages.add(newMessage)
-
     fun hasTail(messageIndex: Long): Boolean {
+        Log.d("Message", "$messages")
         if (messageIndex >= messages.size) {
             return false
         }
@@ -88,10 +106,13 @@ class Conversation {
         if (currentMessage.hasMessageSentAfterItByTheOther()) return true
         return currentMessage.hasMessageSentTwentySecondsAfterwards()
     }
-    fun hasPreviousMessageSentMoreThanAnHourAgo(messageIndex: Long): Boolean {
-        val currentMessage = messages[messageIndex.toInt()]
+    fun hasPreviousMessageSentMoreThanAnHourAgo(currentMessage: Message): Boolean {
+        if (messages.isEmpty()){
+            return false
+        }
+        val messageIndex = currentMessage.id!!.toInt()
         if (currentMessage.hasAPreviousMessage()){
-            val previousMessage = messages[messageIndex.toInt()- ONE_INT]
+            val previousMessage = messages[messageIndex - ONE_INT]
             val previousMessageInstantTime = Instant.ofEpochMilli(previousMessage.timestamp)
             val currentMessageInstantTime = Instant.ofEpochMilli(currentMessage.timestamp)
             return isTimeDifferenceGreaterThanOneHour(previousMessageInstantTime, currentMessageInstantTime)
@@ -101,7 +122,7 @@ class Conversation {
         }
         return false
     }
-    fun calculateTimeDifferenceBetweenTwoMessages(index1: Long, index2: Long): Long{
+    fun calculateTimeDifferenceBetweenTwoMessages(index1: Long, index2: Long): Long {
         val message1 = messages[index1.toInt()]
         val message2 = messages[index2.toInt()]
         val instant1 = Instant.ofEpochMilli(message1.timestamp)
@@ -110,15 +131,15 @@ class Conversation {
         return duration.toMillis()
     }
     private fun Message.isTheMostRecent() = messageBoundSafeSize == this.id
-    private fun Message.hasMessageSentAfterIt(): Boolean = this.id < messageBoundSafeSize
-    private fun Message.getMessageSentAfterByCurrentIndex() = messages[this.id.toInt() + ONE_INT]
+    private fun Message.hasMessageSentAfterIt(): Boolean = this.id!! < messageBoundSafeSize
+    private fun Message.getMessageSentAfterByCurrentIndex() = messages[this.id!!.toInt() + ONE_INT]
     private fun Message.hasMessageSentAfterItByTheOther(): Boolean {
         if (this.hasMessageSentAfterIt()) {
             return this.sender != getMessageSentAfterByCurrentIndex().sender
         }
         return false
     }
-    private fun Message.hasAPreviousMessage(): Boolean = this.id > ZERO_LONG
+    private fun Message.hasAPreviousMessage(): Boolean = this.id!! > ZERO_LONG
     private fun Message.hasNoPreviousMessage(): Boolean = this.id == ZERO_LONG
     private fun Message.hasMessageSentTwentySecondsAfterwards(): Boolean {
         if (this.hasMessageSentAfterIt()) {
@@ -130,19 +151,19 @@ class Conversation {
     private fun Message.isMoreThanTwentySecondsAgoAfterwards(currentMessage: Message): Boolean =
         this.timestamp - currentMessage.timestamp > TWENTY_SECONDS
 
-    suspend fun simulateOnGoingChat() {
-        for (i in 0..5){
-            addMessage(Message(sender = Sender.ME, content = "Hey"))
-            addMessage(Message(sender = Sender.ME, content = "How are you?"))
-        }
-        delay(TEN_SECONDS)
-        addMessage(
-            Message(
-                sender = Sender.OTHER,
-                content = "Hey"
-            )
-        )
-    }
+//    suspend fun simulateOnGoingChat() {
+//        for (i in 0..5){
+//            addMessage(Message(sender = Sender.ME, content = "Hey"))
+//            addMessage(Message(sender = Sender.ME, content = "How are you?"))
+//        }
+//        delay(TEN_SECONDS)
+//        addMessage(
+//            Message(
+//                sender = Sender.OTHER,
+//                content = "Hey"
+//            )
+//        )
+//    }
 }
 
 fun isTimeDifferenceGreaterThanOneHour(instant1: Instant, instant2: Instant): Boolean {
@@ -156,7 +177,7 @@ fun formatInstantToDayAndTime(instant: Instant): String {
     return localDateTime.format(formatter)
 }
 object Number {
-    const val ZERO_LONG = 0L
+    const val ZERO_LONG = 1L
     const val ONE_LONG = 1L
     const val ONE_INT = 1
     const val SIXTY_MIN = 60
