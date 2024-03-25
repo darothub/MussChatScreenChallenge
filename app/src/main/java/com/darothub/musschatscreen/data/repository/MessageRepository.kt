@@ -7,5 +7,4 @@ import kotlinx.coroutines.flow.Flow
 interface MessageRepository {
     fun fetchAllMessages(): Flow<List<Message>>
     suspend fun addMessage(messageEntity: MessageEntity)
-    suspend fun updateMessage(messageEntity: MessageEntity)
 }

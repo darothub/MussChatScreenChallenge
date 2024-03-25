@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.util
+package com.darothub.musschatscreen
 
 import android.view.ViewTreeObserver
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -15,8 +15,13 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import com.darothub.musschatscreen.model.Sender
+import com.darothub.musschatscreen.presentation.ui.screens.Number
 import kotlinx.coroutines.launch
+import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -47,14 +52,7 @@ fun Modifier.hideKeyboardOnClick(onClick:() -> Unit): Modifier = Modifier.compos
 }
 
 @OptIn(ExperimentalContracts::class)
-inline fun Sender.says(block: (Sender) -> Boolean): Boolean {
-    contract {
-        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
-    }
-    return block(this)
-}
-@OptIn(ExperimentalContracts::class)
-inline fun Sender.sayss(block: (Sender) -> Unit): Unit {
+inline fun Sender.says(block: (Sender) -> Unit) {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }
@@ -69,7 +67,14 @@ fun Modifier.flip(isFlipped: Boolean): Modifier = composed {
     }
 }
 
-fun Long.isMoreThanTwentySecondsAgo(): Boolean {
-    val threshold = Instant.now().minusSeconds(20)
-    return Instant.ofEpochMilli(this) > threshold
+
+fun isTimeDifferenceGreaterThanOneHour(instant1: Instant, instant2: Instant): Boolean {
+    val duration = Duration.between(instant1, instant2).abs()
+    return duration.toMinutes() > Number.SIXTY_MIN
+}
+
+fun formatInstantToDayAndTime(instant: Instant): String {
+    val localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
+    val formatter = DateTimeFormatter.ofPattern("EEEE HH:mm")
+    return localDateTime.format(formatter)
 }

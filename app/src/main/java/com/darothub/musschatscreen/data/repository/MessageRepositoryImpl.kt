@@ -11,9 +11,6 @@ class MessageRepositoryImpl(val dao: MessageDao) : MessageRepository {
         dao.getAllMessages().map { it.toMessageList() }
 
     override suspend fun addMessage(messageEntity: MessageEntity) = dao.addMessage(messageEntity)
-    override suspend fun updateMessage(messageEntity: MessageEntity) {
-        dao.updateMessage(messageEntity)
-    }
 
     private fun List<MessageEntity>.toMessageList(): List<Message> = this.map { it.toMessage() }
 

@@ -21,13 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darothub.musschatscreen.formatInstantToDayAndTime
 import com.darothub.musschatscreen.model.Message
 import com.darothub.musschatscreen.model.calculateTimeDifferenceBetweenTwoMessages
-import com.darothub.musschatscreen.presentation.ui.screens.Conversation
-import com.darothub.musschatscreen.presentation.ui.screens.Number
 import com.darothub.musschatscreen.presentation.ui.screens.currentUser
-import com.darothub.musschatscreen.presentation.ui.screens.formatInstantToDayAndTime
-import com.darothub.musschatscreen.util.flip
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -46,7 +43,7 @@ fun MessageList(
         items(conversation.value) {message ->
             val messages = conversation.value
             val isMe = message.sender == currentUser
-            val alignment = if (isMe) Arrangement.Start else Arrangement.End
+            val alignment = if (isMe) Arrangement.End else Arrangement.Start
             val hasTail = message.hasTail(messages)
 
             Log.d("HasTail", "$hasTail")
@@ -88,7 +85,7 @@ fun MessageList(
                     targetState = animationState,
                 ) { content ->
                     if (content){
-                        MessageBubble(modifier = Modifier.flip(!isMe), isMe = isMe, message = updatedMessage)
+                        MessageBubble(message = updatedMessage, isMe = isMe)
                     }
                 }
             }

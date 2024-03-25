@@ -14,11 +14,12 @@ import com.darothub.musschatscreen.R
 
 @Composable
 fun TailImage() {
-    val imagePainter: Painter = painterResource(id = R.drawable.read_icon)
+    val imagePainter: Painter = painterResource(id = R.drawable.read_icon_right)
     Image(
         painter = imagePainter,
         contentDescription = "read icon",
-        modifier = Modifier.wrapContentSize()
+        modifier = Modifier
+            .wrapContentSize()
             .size(15.dp),
         colorFilter = ColorFilter.tint(Color.White)
     )

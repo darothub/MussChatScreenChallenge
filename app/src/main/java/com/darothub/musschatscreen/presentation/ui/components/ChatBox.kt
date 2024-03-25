@@ -21,9 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.darothub.musschatscreen.bringViewAboveKeyboard
 import com.darothub.musschatscreen.model.Message
-import com.darothub.musschatscreen.presentation.ui.screens.Conversation
-import com.darothub.musschatscreen.util.bringViewAboveKeyboard
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
