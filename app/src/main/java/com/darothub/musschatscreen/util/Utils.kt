@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 import com.darothub.musschatscreen.model.Sender
 import kotlinx.coroutines.launch
+import java.time.Instant
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -59,4 +60,9 @@ fun Modifier.flip(isFlipped: Boolean): Modifier = composed {
     } else {
         this
     }
+}
+
+fun Long.isMoreThanTwentySecondsAgo(): Boolean {
+    val threshold = Instant.now().minusSeconds(20)
+    return Instant.ofEpochMilli(this) > threshold
 }

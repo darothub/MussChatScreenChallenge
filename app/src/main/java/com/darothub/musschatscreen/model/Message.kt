@@ -7,12 +7,8 @@ data class Message (
     val sender: Sender,
     val content: String,
     val timestamp: Long = Instant.now().toEpochMilli(),
-    val hasTailImage: Boolean = false
+    val hasTail: Boolean = false
 ){
-//    val hasTailImage:Boolean
-//        get() {
-//            return this.id == (indexes.size - 1).toLong()
-//        }
     companion object {
         private var counter:Long = 0
         private val indexes = mutableListOf<Long>()

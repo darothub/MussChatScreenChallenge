@@ -30,11 +30,17 @@ fun MessageBubble(modifier: Modifier=Modifier, message: Message, isMe: Boolean =
             Column {
                 Text(
                     text = message.content,
-                    modifier = Modifier.flip(!isMe)
-                        .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = if (message.hasTailImage) 0.dp else 8.dp)
+                    modifier = Modifier
+                        .flip(!isMe)
+                        .padding(
+                            top = 8.dp,
+                            start = 8.dp,
+                            end = 8.dp,
+                            bottom = if (message.hasTail) 0.dp else 8.dp
+                        )
                         .align(Alignment.CenterHorizontally)
                 )
-                if (message.hasTailImage){
+                if (message.hasTail){
                     TailImage()
                 }
             }
