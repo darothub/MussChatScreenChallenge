@@ -47,7 +47,7 @@ fun ChatBox(modifier: Modifier = Modifier, listState: LazyListState, conversatio
             ChatTextField(
                 modifier = Modifier
                     .weight(1f)
-                    .height(40.dp)
+                    .height(50.dp)
                     .padding(end = 15.dp),
                 value = newMessageText,
                 onValueChange = {
