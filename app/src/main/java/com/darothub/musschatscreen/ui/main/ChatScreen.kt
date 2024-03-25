@@ -152,7 +152,7 @@ fun isTimeDifferenceGreaterThanOneHour(instant1: Instant, instant2: Instant): Bo
 
 fun formatInstantToDayAndTime(instant: Instant): String {
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
-    val formatter = DateTimeFormatter.ofPattern("EE HH:mm")
+    val formatter = DateTimeFormatter.ofPattern("EEEE HH:mm")
     return localDateTime.format(formatter)
 }
 object Number {
