@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen
+package com.darothub.musschatscreen.presentation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,14 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.darothub.musschatscreen.Number
 import com.darothub.musschatscreen.application.di.ServiceLocator
 import com.darothub.musschatscreen.model.Message
 import com.darothub.musschatscreen.model.Sender
 import com.darothub.musschatscreen.presentation.ui.screens.MainScreen
-import com.darothub.musschatscreen.presentation.ui.screens.Number
 import com.darothub.musschatscreen.presentation.ui.screens.currentUser
 import com.darothub.musschatscreen.presentation.viewmodel.ConversationViewModel
 import com.darothub.musschatscreen.presentation.viewmodel.ConversationViewModelFactory
+import com.darothub.musschatscreen.says
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 val listOfLetters = listOf("a", "b", "w", "c", "o", "e", "i", "u")

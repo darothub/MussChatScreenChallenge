@@ -23,16 +23,11 @@ fun MessageBubble(
 ) {
     val bubbleColor = if (isMe) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
     val contentColor = if (isMe) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
-
+    val shouldShowTail = message.hasTail && isMe
     Box(modifier = modifier) {
         Surface(
             modifier = modifier.padding(horizontal = 15.dp, vertical = 1.dp).wrapContentSize(),
-            shape = RoundedCornerShape(
-                topStart = 16.dp,
-                topEnd = 16.dp,
-                bottomStart = if (isMe) 16.dp else 0.dp,
-                bottomEnd = if (isMe) 0.dp else 16.dp
-            ),
+            shape = roundedBubbleShape(isMe),
             color = bubbleColor,
             contentColor = contentColor
         ) {
@@ -47,13 +42,21 @@ fun MessageBubble(
                         top = 8.dp,
                         start = 8.dp,
                         end = 8.dp,
-                        bottom = if (message.hasTail && isMe) 0.dp else 8.dp
+                        bottom = if (shouldShowTail) 0.dp else 8.dp
                     )
                 )
-                if (message.hasTail && isMe) {
+                if (shouldShowTail) {
                     tailImage?.invoke() ?: TailImage()
                 }
             }
         }
     }
 }
+
+
+private fun roundedBubbleShape(isMe: Boolean) = RoundedCornerShape(
+    topStart = 16.dp,
+    topEnd = 16.dp,
+    bottomStart = if (isMe) 16.dp else 0.dp,
+    bottomEnd = if (isMe) 0.dp else 16.dp
+)

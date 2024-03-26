@@ -27,7 +27,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun ChatBox(modifier: Modifier = Modifier, listState: LazyListState, conversation: State<List<Message>>, onSend: (String) -> Unit){
+fun ChatBox(
+    modifier: Modifier = Modifier,
+    listState: LazyListState,
+    conversation: State<List<Message>>,
+    onSend: (String) -> Unit
+){
     var newMessageText by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 

@@ -1,10 +1,9 @@
 package com.darothub.musschatscreen.model
 
+import com.darothub.musschatscreen.Number.ONE
 import com.darothub.musschatscreen.data.entity.MessageEntity
 import com.darothub.musschatscreen.isTimeDifferenceGreaterThanOneHour
-import com.darothub.musschatscreen.presentation.ui.screens.Number
-import com.darothub.musschatscreen.presentation.ui.screens.Number.ONE
-import java.time.Duration
+import com.darothub.musschatscreen.Number.TWENTY_SECONDS
 import java.time.Instant
 
 data class Message (
@@ -14,6 +13,11 @@ data class Message (
     val timestamp: Long = Instant.now().toEpochMilli(),
     var hasTail: Boolean = false
 ){
+    fun toMessageEntity() = MessageEntity(
+        sender = this.sender,
+        content = this.content,
+        timestamp = this.timestamp
+    )
     fun hasTail(messages: List<Message>): Boolean {
         if (this.id == null){
             return false
@@ -31,13 +35,15 @@ data class Message (
             return false
         }
         if (hasAPreviousMessage(messages)){
-            val previousMessage = messages.getOrNull(messages.indexOf(this) - ONE)
-            val previousMessageInstantTime = Instant.ofEpochMilli(previousMessage!!.timestamp)
+            val previousMessage = messages[messages.indexOf(this) - ONE]
+            val previousMessageInstantTime = Instant.ofEpochMilli(previousMessage.timestamp)
             val thisInstantTime = Instant.ofEpochMilli(this.timestamp)
             return isTimeDifferenceGreaterThanOneHour(previousMessageInstantTime, thisInstantTime)
         }
         return false
     }
+    fun hasNoPreviousMessage(messages: List<Message>): Boolean = !hasAPreviousMessage(messages)
+
     private fun isTheMostRecent(messages: List<Message>) =
         messages.lastIndex == messages.indexOf(this)
     private fun hasMessageSentAfterItByTheOther(messages: List<Message>): Boolean {
@@ -49,34 +55,19 @@ data class Message (
     private fun hasMessageSentAfterIt(messages: List<Message>): Boolean =
         messages.indexOf(this) < messages.lastIndex
     private fun getMessageSentAfterByCurrentIndex(messages: List<Message>) =
-        messages.getOrNull(messages.indexOf(this) + 1)
+        messages.getOrNull(messages.indexOf(this) + ONE)
 
     private fun hasAPreviousMessage(messages: List<Message>): Boolean =
-        messages.getOrNull(messages.indexOf(this) - 1) != null
-    fun hasNoPreviousMessage(messages: List<Message>): Boolean = !hasAPreviousMessage(messages)
+        messages.getOrNull(messages.indexOf(this) - ONE) != null
     private fun hasMessageSentTwentySecondsAfterwards(messages: List<Message>): Boolean {
         if (this.hasMessageSentAfterIt(messages)) {
-            return getMessageSentAfterByCurrentIndex(messages)!!.isMoreThanTwentySecondsAgoAfterwards(this)
+            return getMessageSentAfterByCurrentIndex(messages)?.
+            isMoreThanTwentySecondsAgoAfterwards(this) == true
         }
         return false
     }
     private fun isMoreThanTwentySecondsAgoAfterwards(currentMessage: Message): Boolean =
-        this.timestamp - currentMessage.timestamp > Number.TWENTY_SECONDS
-    fun toMessageEntity() = MessageEntity(
-        sender = this.sender,
-        content = this.content,
-        timestamp = this.timestamp
-    )
+        this.timestamp - currentMessage.timestamp > TWENTY_SECONDS
+
 }
 
-fun calculateTimeDifferenceBetweenTwoMessages(index1: Int, index2: Int?, messages: List<Message>): Long {
-    val message1 = messages[index1]
-    if (index2 == null || index2 < 0){
-        return message1.timestamp
-    }
-    val message2 = messages.get(index2.toInt())
-    val instant1 = Instant.ofEpochMilli(message1.timestamp)
-    val instant2 = Instant.ofEpochMilli(message2.timestamp)
-    val duration = Duration.between(instant1, instant2).abs()
-    return duration.toMillis()
-}

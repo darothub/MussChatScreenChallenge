@@ -1,6 +1,5 @@
 package com.darothub.musschatscreen.presentation.ui.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.darothub.musschatscreen.formatInstantToDayAndTime
 import com.darothub.musschatscreen.model.Message
-import com.darothub.musschatscreen.model.calculateTimeDifferenceBetweenTwoMessages
 import com.darothub.musschatscreen.presentation.ui.screens.currentUser
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -43,35 +41,19 @@ fun MessageList(
         items(conversation.value) {message ->
             val messages = conversation.value
             val isMe = message.sender == currentUser
+
             val alignment = if (isMe) Arrangement.End else Arrangement.Start
-            val hasTail = message.hasTail(messages)
 
-            Log.d("HasTail", "$hasTail")
-            var updatedMessage: Message = message
-            if (hasTail && isMe){
-                updatedMessage = message.copy(hasTail = hasTail)
+            val updatedMessage = if (message.hasTail(messages) && isMe) {
+                message.copy(hasTail = message.hasTail(messages))
+            } else {
+                message
             }
-            val hasNoPreviousMessage =
-                message.hasNoPreviousMessage(messages)
-            val hasPreviousMessageSentMoreThanAnHourAgo =
-                message.hasPreviousMessageSentMoreThanAnHourAgo(messages)
-            val showSection = hasNoPreviousMessage || hasPreviousMessageSentMoreThanAnHourAgo
 
-            if (showSection){
-                val currentMessageIndex = messages.indexOf(message)
-                val supposedPreviousMessageIndex = currentMessageIndex - 1
-                val timeDiff = calculateTimeDifferenceBetweenTwoMessages(
-                    messages.indexOf(message), supposedPreviousMessageIndex,
-                    messages
-                )
-                val sectionHeader:String =
-                    formatInstantToDayAndTime(Instant.ofEpochMilli(timeDiff))
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = sectionHeader, fontSize = 16.sp)
-                }
+            val shouldShowSectionHeader = shouldShowSectionHeader(message, messages)
+
+            if (shouldShowSectionHeader){
+                CreateSectionHeader(message)
             }
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = alignment) {
@@ -93,3 +75,18 @@ fun MessageList(
     }
 }
 
+fun shouldShowSectionHeader(message: Message, messages: List<Message>): Boolean {
+    return message.hasNoPreviousMessage(messages) or
+            message.hasPreviousMessageSentMoreThanAnHourAgo(messages)
+}
+@Composable
+fun CreateSectionHeader(message: Message) {
+    val sectionHeader = formatInstantToDayAndTime(Instant.ofEpochMilli(message.timestamp))
+
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(text = sectionHeader, fontSize = 16.sp)
+    }
+}
