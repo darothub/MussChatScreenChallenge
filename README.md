@@ -32,7 +32,7 @@ The application provides customizable themes for sender and receiver bubbles, te
 
 To run the application, follow these steps:
 
-1. Clone the repository: `git clone [https://github.com/darothub/yMussChatScreenChallenge.git](https://github.com/darothub/MussChatScreenChallenge)`
+1. Clone the repository: `git clone https://github.com/darothub/MussChatScreenChallenge`
 2. Open the project in Android Studio.
 3. Build and run the project on an emulator or physical device.
 
@@ -41,7 +41,7 @@ To run the application, follow these steps:
 - Jetpack Compose: A modern toolkit for building native Android UI.
 - Room Persistence Library: Provides an abstraction layer over SQLite to interact with the database.
 - Material Components for Android: Provides customizable UI components following the Material Design guidelines.
-- MockK: Mocking library for Kotlin `[visit](https://mockk.io/#junit4)`
+- MockK: Mocking library for Kotlin [visit](https://mockk.io/#junit4)
 
 ## Screenshots
 
