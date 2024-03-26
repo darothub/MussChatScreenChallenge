@@ -54,8 +54,6 @@ To run the application, follow these steps:
 https://github.com/darothub/MussChatScreenChallenge/assets/21008156/93004052-9789-4438-bbb5-708fec9d2b8d
 
 
-[Add a short recording of the application running on an emulator or device here]
-
 ## Credits
 
 The design and requirements for this project are based on the Muzz app.
