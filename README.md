@@ -41,7 +41,7 @@ To run the application, follow these steps:
 - Jetpack Compose: A modern toolkit for building native Android UI.
 - Room Persistence Library: Provides an abstraction layer over SQLite to interact with the database.
 - Material Components for Android: Provides customizable UI components following the Material Design guidelines.
-- MockK: Mocking library for Kotlin `[visit](https://mockk.io/#junit4)`
+- MockK: Mocking library for Kotlin [visit](https://mockk.io/#junit4)
 
 ## Screenshots
 
