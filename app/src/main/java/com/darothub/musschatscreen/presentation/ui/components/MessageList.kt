@@ -20,9 +20,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.darothub.musschatscreen.formatInstantToDayAndTime
 import com.darothub.musschatscreen.model.Message
 import com.darothub.musschatscreen.presentation.ui.screens.currentUser
+import com.darothub.musschatscreen.utils.TimeUtils
 import kotlinx.coroutines.launch
 import java.time.Instant
 
@@ -81,7 +81,7 @@ fun shouldShowSectionHeader(message: Message, messages: List<Message>): Boolean 
 }
 @Composable
 fun CreateSectionHeader(message: Message) {
-    val sectionHeader = formatInstantToDayAndTime(Instant.ofEpochMilli(message.timestamp))
+    val sectionHeader = TimeUtils.formatInstantToDayAndTime(Instant.ofEpochMilli(message.timestamp))
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(8.dp),

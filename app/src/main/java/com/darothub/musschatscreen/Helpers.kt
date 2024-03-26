@@ -12,10 +12,6 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalView
 import com.darothub.musschatscreen.model.Sender
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -43,16 +39,6 @@ inline fun Sender.says(block: (Sender) -> Unit) {
     return block(this)
 }
 
-
-fun isTimeDifferenceGreaterThanOneHour(instant1: Instant, instant2: Instant): Boolean {
-    val duration = Duration.between(instant1, instant2).abs()
-    return duration.toMinutes() > Number.SIXTY_MIN
-}
-
-fun formatInstantToDayAndTime(instant: Instant): String {
-    val formatter = DateTimeFormatter.ofPattern("EEEE HH:mm")
-    return formatter.format(instant.atZone(ZoneId.systemDefault()))
-}
 
 
 
