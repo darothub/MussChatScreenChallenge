@@ -26,7 +26,7 @@ fun MessageBubble(
     val shouldShowTail = message.hasTail && isMe
     Box(modifier = modifier) {
         Surface(
-            modifier = modifier.padding(horizontal = 15.dp, vertical = 1.dp).wrapContentSize(),
+            modifier = modifier.padding(horizontal = 15.dp, vertical = 5.dp).wrapContentSize(),
             shape = roundedBubbleShape(isMe),
             color = bubbleColor,
             contentColor = contentColor
