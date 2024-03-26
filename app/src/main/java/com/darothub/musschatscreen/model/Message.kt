@@ -1,9 +1,9 @@
 package com.darothub.musschatscreen.model
 
 import com.darothub.musschatscreen.Number.ONE
-import com.darothub.musschatscreen.data.entity.MessageEntity
-import com.darothub.musschatscreen.isTimeDifferenceGreaterThanOneHour
 import com.darothub.musschatscreen.Number.TWENTY_SECONDS
+import com.darothub.musschatscreen.data.entity.MessageEntity
+import com.darothub.musschatscreen.utils.TimeUtils
 import java.time.Instant
 
 data class Message (
@@ -38,7 +38,7 @@ data class Message (
             val previousMessage = messages[messages.indexOf(this) - ONE]
             val previousMessageInstantTime = Instant.ofEpochMilli(previousMessage.timestamp)
             val thisInstantTime = Instant.ofEpochMilli(this.timestamp)
-            return isTimeDifferenceGreaterThanOneHour(previousMessageInstantTime, thisInstantTime)
+            return TimeUtils.isTimeDifferenceGreaterThanOneHour(previousMessageInstantTime, thisInstantTime)
         }
         return false
     }
