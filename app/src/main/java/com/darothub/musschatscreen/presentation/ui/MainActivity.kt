@@ -19,9 +19,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 val listOfLetters = listOf("a", "b", "w", "c", "o", "e", "i", "u")
 val sentence = listOf(
-    "Try another word with letter ",
-    "hmm you must good at using letter",
-    "teach me how to use letter"
+    "Try another word with the letter",
+    "hmm you must good at using the letter",
+    "This is not how to use the letter",
+    "I just learnt a new word with the letter"
 ).random()
 
 class MainActivity : ComponentActivity() {
