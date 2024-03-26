@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.ui.components
+package com.darothub.musschatscreen.presentation.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,18 +21,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.darothub.musschatscreen.ui.main.Conversation
-import com.darothub.musschatscreen.util.bringViewAboveKeyboard
+import com.darothub.musschatscreen.bringViewAboveKeyboard
+import com.darothub.musschatscreen.model.Message
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun ChatBox(modifier: Modifier = Modifier, listState: LazyListState, conversation: Conversation, onSend: (String) -> Unit){
+fun ChatBox(
+    modifier: Modifier = Modifier,
+    listState: LazyListState,
+    conversation: State<List<Message>>,
+    onSend: (String) -> Unit
+){
     var newMessageText by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .bringViewAboveKeyboard()
             .padding(top = 120.dp)
             .fillMaxWidth()
@@ -61,7 +67,9 @@ fun ChatBox(modifier: Modifier = Modifier, listState: LazyListState, conversatio
                     onSend(newMessageText)
                     newMessageText = ""
                     coroutineScope.launch {
-                        listState.animateScrollToItem(conversation.messages.lastIndex)
+                        if (conversation.value.isNotEmpty()){
+                            listState.animateScrollToItem(conversation.value.lastIndex)
+                        }
                     }
                 }
             )

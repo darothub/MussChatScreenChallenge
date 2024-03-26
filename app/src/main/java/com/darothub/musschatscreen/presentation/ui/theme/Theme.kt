@@ -1,29 +1,27 @@
-package com.darothub.musschatscreen.ui.theme
+package com.darothub.musschatscreen.presentation.ui.theme
 
-import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = HotPink,
-    secondary = PurpleGrey80,
+    secondary = Color.LightGray,
     tertiary = Pink80,
+    onPrimary = Color.White,
+    onSecondary = Color.Black
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = HotPink,
-    secondary = PurpleGrey40,
+    secondary = Color.LightGray,
     tertiary = Pink40,
-    background = Color(0xFFFFFFFF)
-
+    background = Color(0xFFFFFFFF),
+    onPrimary = Color.White,
+    onSecondary = Color.Black
     /* Other default colors to override
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
@@ -43,20 +41,6 @@ fun MussChatScreenTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
-    }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

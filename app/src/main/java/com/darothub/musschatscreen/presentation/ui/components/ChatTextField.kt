@@ -1,4 +1,4 @@
-package com.darothub.musschatscreen.ui.components
+package com.darothub.musschatscreen.presentation.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
